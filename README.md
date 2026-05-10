@@ -12,7 +12,7 @@ Conteúdo da disciplina: Interval partitioning
 
 ## Sobre
 
-##Screenshot
+## Screenshot
 
 ## Instalação 
 
