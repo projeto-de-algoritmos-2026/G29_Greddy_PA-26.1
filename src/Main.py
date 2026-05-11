@@ -46,3 +46,55 @@ class MinHeap:
                 idx = menor
             else:
                 break
+
+class Reserva:
+    def __init__(self, nome: str, inicio: float, fim: float):
+        self.nome = nome
+        self.inicio = inicio
+        self.fim = fim
+
+    def __repr__(self) -> str:
+        hora_inicio = self._formatar_hora(self.inicio)
+        hora_fim = self._formatar_hora(self.fim)
+        return f"[{self.nome}: {hora_inicio} às {hora_fim}]"
+
+    @staticmethod
+    def _formatar_hora(tempo: float) -> str:
+        horas = int(tempo)
+        minutos = int(round((tempo - horas) * 60))
+        return f"{horas:02d}:{minutos:02d}"
+
+class GerenciadorDeSala:
+    def __init__(self):
+        self.solicitacoes: list[Reserva] = []
+
+    def adicionar_solicitacao(self, reserva: Reserva):
+        self.solicitacoes.append(reserva)
+
+    def listar_solicitacoes(self):
+        if not self.solicitacoes:
+            print("Nenhuma aula cadastrada ainda.")
+            return False
+        print("\n--- Aulas Cadastradas ---")
+        for i, req in enumerate(self.solicitacoes):
+            print(f"{i} - {req}")
+        return True
+
+    def editar_nome(self, indice: int, novo_nome: str):
+        if 0 <= indice < len(self.solicitacoes):
+            self.solicitacoes[indice].nome = novo_nome
+            return True
+        return False
+
+    def editar_horario(self, indice: int, novo_inicio: float, novo_fim: float):
+        if 0 <= indice < len(self.solicitacoes):
+            self.solicitacoes[indice].inicio = novo_inicio
+            self.solicitacoes[indice].fim = novo_fim
+            return True
+        return False
+
+    def excluir_solicitacao(self, indice: int):
+        if 0 <= indice < len(self.solicitacoes):
+            del self.solicitacoes[indice]
+            return True
+        return False
