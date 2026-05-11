@@ -136,3 +136,107 @@ class GerenciadorDeSala:
                 salas_heap.adicionar((aula.fim, nova_sala_idx))
 
         return todas_as_salas
+    
+def ler_horario(mensagem: str) -> float:
+    while True:
+        try:
+            return float(input(mensagem))
+        except ValueError:
+            print("Erro: Digite apenas numeros decimais (ex: 14.5).")
+
+if __name__ == "__main__":
+    gerenciador = GerenciadorDeSala()
+    
+    while True:
+        print("\n" + "=" * 55)
+        print("=== SISTEMA DE RESERVA ===")
+        print("1. Adicionar aula")
+        print("2. Listar aulas cadastradas")
+        print("3. Editar o NOME")
+        print("4. Editar os HORARIOS")
+        print("5. Excluir aula")
+        print("6. Preencher UMA UNICA SALA ao maximo")
+        print("7. Alocar TODAS as aulas em MULTIPLAS SALAS")
+        print("0. Sair")
+        print("=" * 55)
+        
+        opcao = input("Escolha uma opcao: ").strip()
+        
+        if opcao == '1':
+            nome = input("Nome da materia: ")
+            inicio = ler_horario(f"Inicio de {nome} (ex: 8.5): ")
+            fim = ler_horario(f"Termino de {nome} (ex: 10.0): ")
+            
+            if inicio >= fim:
+                print("Erro: O termino deve ser depois do inicio.")
+            else:
+                gerenciador.adicionar_solicitacao(Reserva(nome, inicio, fim))
+                print("Aula adicionada com sucesso!")
+
+        elif opcao == '2':
+            gerenciador.listar_solicitacoes()
+
+        elif opcao == '3':
+            if gerenciador.listar_solicitacoes():
+                try:
+                    idx = int(input("\nDigite o NUMERO da aula: "))
+                    novo_nome = input("NOVO NOME da materia: ")
+                    if gerenciador.editar_nome(idx, novo_nome): print("Editado com sucesso!")
+                    else: print("Erro: Indice invalido.")
+                except ValueError: print("Erro: Digite um numero inteiro.")
+
+        elif opcao == '4':
+            if gerenciador.listar_solicitacoes():
+                try:
+                    idx = int(input("\nDigite o NUMERO da aula: "))
+                    inicio = ler_horario("Novo INICIO: ")
+                    fim = ler_horario("Novo TERMINO: ")
+                    if inicio >= fim: print("Erro: O termino deve ser depois do inicio.")
+                    elif gerenciador.editar_horario(idx, inicio, fim): print("Editado com sucesso!")
+                    else: print("Erro: Indice invalido.")
+                except ValueError: print("Erro: Digite um numero inteiro.")
+
+        elif opcao == '5':
+            if gerenciador.listar_solicitacoes():
+                try:
+                    idx = int(input("\nDigite o NUMERO da aula que deseja excluir: "))
+                    if gerenciador.excluir_solicitacao(idx): print("Excluida com sucesso!")
+                    else: print("Erro: Indice invalido.")
+                except ValueError: print("Erro: Digite um numero inteiro.")
+
+        elif opcao == '6':
+            print("\nPREENCHENDO A SALA PRINCIPAL...")
+            agenda_unica = gerenciador.otimizar_sala_unica()
+            
+            if not agenda_unica:
+                print("Nenhuma aula cadastrada.")
+            else:
+                print(f"\nAulas alocadas na Sala 1: {len(agenda_unica)}")
+                for aula in agenda_unica:
+                    print(f" -> {aula}")
+                
+                rejeitadas = len(gerenciador.solicitacoes) - len(agenda_unica)
+                if rejeitadas > 0:
+                    print(f"\n*(Nota: {rejeitadas} aula(s) ficaram sem sala)*")
+
+        elif opcao == '7':
+            print("\nCALCULANDO O MINIMO DE SALAS NECESSARIAS...")
+            multiplas_salas = gerenciador.alocar_em_multiplas_salas()
+            
+            if not multiplas_salas:
+                print("Nenhuma aula cadastrada.")
+            else:
+                print(f"\nTotal de salas abertas: {len(multiplas_salas)}\n")
+                
+                for i, sala in enumerate(multiplas_salas, 1):
+                    print(f"--- SALA {i} ---")
+                    for aula in sala:
+                        print(f" -> {aula}")
+                    print() 
+
+        elif opcao == '0':
+            print("Saindo do sistema...")
+            break
+            
+        else:
+            print("Erro: Opcao invalida. Tente novamente.")
