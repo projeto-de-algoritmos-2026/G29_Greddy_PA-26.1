@@ -98,3 +98,41 @@ class GerenciadorDeSala:
             del self.solicitacoes[indice]
             return True
         return False
+    
+    def otimizar_sala_unica(self) -> list[Reserva]:
+        if not self.solicitacoes:
+            return []
+
+        solicitacoes_ordenadas = sorted(self.solicitacoes, key=lambda r: r.fim)
+        agenda_aprovada = [solicitacoes_ordenadas[0]]
+        ultima_reserva_aprovada = solicitacoes_ordenadas[0]
+
+        for i in range(1, len(solicitacoes_ordenadas)):
+            reserva_atual = solicitacoes_ordenadas[i]
+            if reserva_atual.inicio >= ultima_reserva_aprovada.fim:
+                agenda_aprovada.append(reserva_atual)
+                ultima_reserva_aprovada = reserva_atual
+
+        return agenda_aprovada
+
+    def alocar_em_multiplas_salas(self) -> list[list[Reserva]]:
+        if not self.solicitacoes:
+            return []
+
+        aulas_ordenadas = sorted(self.solicitacoes, key=lambda r: r.inicio)
+        salas_heap = MinHeap()
+        todas_as_salas = []
+
+        for aula in aulas_ordenadas:
+            sala_mais_cedo = salas_heap.ver_raiz()
+
+            if sala_mais_cedo and sala_mais_cedo[0] <= aula.inicio:
+                hora_liberacao, indice_sala = salas_heap.remover()
+                todas_as_salas[indice_sala].append(aula)
+                salas_heap.adicionar((aula.fim, indice_sala))
+            else:
+                nova_sala_idx = len(todas_as_salas)
+                todas_as_salas.append([aula])
+                salas_heap.adicionar((aula.fim, nova_sala_idx))
+
+        return todas_as_salas
