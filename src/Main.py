@@ -2,9 +2,6 @@ class MinHeap:
     def __init__(self):
         self.heap = []
 
-    def __bool__(self):
-        return bool(self.heap)
-
     def ver_raiz(self):
         if not self.heap:
             return None
