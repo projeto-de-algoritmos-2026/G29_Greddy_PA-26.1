@@ -109,4 +109,4 @@ Imagem 7: Alerta de "Nenhuma aula cadastrada"
 Linguagem: Python
 
 ## Gravação
-A gravação pode ser acessada através do link []()
+A gravação pode ser acessada através do link [https://youtu.be/c2PC3arbOPw](https://youtu.be/c2PC3arbOPw)
